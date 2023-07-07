@@ -9,7 +9,7 @@
 Ve funkci `connect_to_database()` se nachází údaje o připojení k databázi, v případě potřeby lze změnit proměnné k připojení do databáze.
 
 ## Teoretický test
-Cesta k testu teorie se nachází v složce `doc`, která zároveň i postupuje úvodní brainstorming.
+Cesta k testu teorie se nachází v složce `doc`, která zároveň i obsahuje úvodní brainstorming projektu.
 
 ## Závěr
 Z důvodů, kdy mi bylo na pohovoru řečeno, že při zhotovení tohoto testu bych se měl doučit databáze,
