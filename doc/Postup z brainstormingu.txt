@@ -1,0 +1,45 @@
+Spojení:
+1. ETL proces pro získání dat:
+1.1. Vytvořit funkci pro stahování souborů a dat z internetu.
+1.2. Ověřit, že jsou všechna stažená správně.
+1.3. Využít knihovnu pandas pro čtení a parsování CSV souborů.
+1.4. Uložit data do databáze PostgreSQL.
+1.Poznámky:
+	1.P0. Stránky na stažení dat:
+	– https://urlhaus.abuse.ch/downloads/csv_recent/
+	– http://reputation.alienvault.com/reputation.data
+	– https://openphish.com/feed.txt
+
+2. Tvorba schématu databáze:
+2.1. Vyhodnotit a vytvořit schéma databáze pro tabulky. (?)
+2.2. Každá tabulka bude určena pro hlavní informaci.
+2.3. Hypoteticky je každá url a ip adresa unikátní a snadno vyhledatelná. (pomocí indexu)
+2.4. Musí existovat tabulka obsahující původní zadaný databáze
+2.4.1. Existence sloupce, který pojednává o druhu tabulky, např. AlienVault.
+2.5. Každý sloupec nebo řádek bude mít svůj index, který odkazuje na data.
+2.6. Měla by existovat samostatná tabulka pro ukládání ip adres a další pro ukládání url.
+2.Poznámky:
+	2.P0. využít databázový index (B-tree index)
+	2.P1. tuples neměnné data
+	2.P2. možná implementace multiprocessingu nebo thredingu pro konkurentní výpočty
+		2.P2.1. Apply je výrazně pomalejší. 
+
+3. Implementace PostgreSQL databáze:
+3.1. Správné sloupce, index, originální data sloupec.
+3.2. Samostatná tabulka pro ukládání IP adres a další pro URL.
+3.3. Každá URL a IP adresa bude unikátní a snadno vyhledatelná.
+3.4. Existence tabulky, obsahující původ zadaných dat.
+3.5. Každý řádek bude uložen do samostatného záznamu v databázi.
+3.6. Přístup k datům se bude provádět skrze indexy.
+
+4. Ochrana databáze proti SQL injection útokům a jiným typům útoků:
+4.1 Ukládání dat pomocí parametrizace
+4.2. Bezpečné ukládání dat do databáze pomocí context managers.
+4.3. Ochrana proti SQL injection a DoS útokům.
+
+5. Testování aplikace:
+5.1. Zajištění podmínek a analýza funkčnosti.
+5.2 Celková funkcionalita programu.
+
+6. Úprava kódu podle PEP8 standardu.
+
