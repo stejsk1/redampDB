@@ -20,19 +20,21 @@
 - A new file `changelog.md` has been added that explains the changes to the program.
 
 ## About the project
-The `urlhaus`, `alienvault` and `openphish` tables are linked to the `base` table using foreign keys.  
-The `base` table is the control (parent) table,
-from which I then retrieve additional information based on the `base_id` and `source` from the other tables. 
-For the `alientvault` column names, the names used are those contained in the official documentation:  
-`IP` - IPv4 address  
-`Risk` - how risky is the target (1-10)  
-`Reliability` - how reliable is the rating (1-10)  
-`Activity` - what type of host is it  
-`Country` - what is the IPv4 country of origin  
-`City` - what is the IPv4 city of origin  
-`Latitude` - geolocated latitude of the IPv4  
-`Longitude` - geolocated longitude of the IPv4  
-`Occurrences` - these refer to the amount of occurrences reported to OTX.3  
+In general, the project serves as a data collection and processing system with the following key features:
+
+- Authentication: The project includes an authentication mechanism to ensure secure access and manipulation of the data, allowing only authorized users to interact with the system.
+
+- File Download: It enables the downloading of CSV files from specified URLs. Existing files are checked, and a comparison is performed to determine if an update is needed based on the newly downloaded data.
+
+- Efficient Data Comparison and Update: By leveraging the `numpy` and `pandas` libraries, the project optimizes data comparison operations. It efficiently compares the downloaded CSV data with the existing records in the `PostgreSQL` database, identifying new or updated entries for accurate and streamlined updates.
+
+- Data Retrieval: The project facilitates data retrieval from the `PostgreSQL` database, enabling users to obtain specific information based on their requirements.
+
+- Logging and Error Handling: Throughout the data collection and processing stages, the project maintains a log file that captures important events and any encountered errors. This logging mechanism aids in troubleshooting and monitoring the system's performance.
+
+- Performance Profiling: The project incorporates profiling capabilities to measure and analyze the performance of its data collection and processing tasks. Profiling results are recorded in a separate file, allowing developers to identify potential bottlenecks and optimize the code for enhanced efficiency.
+
+In summary, the project offers a comprehensive solution for automated data collection, efficient comparison and updating of records in a `PostgreSQL` database, seamless data retrieval, logging of events and errors, and performance profiling for continuous optimization.
 
 ## Theoretical test
 The path to the czech theory test is located in the `doc` folder, which also contains the initial brainstorming of the project.

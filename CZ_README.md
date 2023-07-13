@@ -19,19 +19,21 @@
 Cesta k testu teorie se nachází v složce `doc`, která zároveň i obsahuje úvodní brainstorming projektu.
 
 ## O projektu
-Tabulky `urlhaus`, `alienvault` a `openphish` jsou propojeny s tabulkou `base` pomocí foreign klíčů.  
-Tabulka `base` je řídící (nadřazená) tabulka,
-ze které následně získávám další informace na základě `base_id` a `source` z ostatních tabulek. 
-Pro názvy sloupců `alientvault` jsou využité takové názvy, které jsou obsažené v oficiální dokumentaci:  
-`IP` - IPv4 address  
-`Risk` - how risky is the target (1-10)  
-`Reliability` - how reliable is the rating (1-10)  
-`Activity` - what type of host is it  
-`Country` - what is the IPv4 country of origin  
-`City` - what is the IPv4 city of origin  
-`Latitude` - geolocated latitude of the IPv4  
-`Longitude` - geolocated longitude of the IPv4  
-`Occurrences ` - these refer to the amount of occurrences reported to OTX.3  
+Obecně projekt slouží jako systém sběru a zpracování dat s následujícími klíčovými vlastnostmi:
+
+- Autentizace: Projekt obsahuje autentizační mechanismus, který zajišťuje bezpečný přístup k datům a manipulaci s nimi a umožňuje interakci se systémem pouze oprávněným uživatelům.
+
+- Stahování souborů: Umožňuje stahování souborů CSV ze zadaných adres URL. Stávající soubory jsou kontrolovány a na základě nově stažených dat je provedeno porovnání, zda je nutná aktualizace.
+
+- Efektivní porovnávání a aktualizace dat: Zapomocí využití knihoven `numpy` a `pandas` projekt optimalizuje operace porovnávání dat. Efektivně porovnává stažená data CSV s existujícími záznamy v databázi `PostgreSQL` a identifikuje nové nebo aktualizované záznamy pro přesné a zjednodušené aktualizace.
+
+- Získávání dat: Projekt usnadňuje načítání dat z databáze `PostgreSQL` a umožňuje uživatelům získat konkrétní informace na základě jejich požadavků.
+
+- Protokolování a zpracování chyb: V průběhu shromažďování a zpracování dat projekt udržuje soubor protokolu, který zachycuje důležité události a případné chyby. Tento mechanismus protokolování pomáhá při řešení problémů a sledování výkonu systému.
+
+- Profilování výkonu: Projekt obsahuje funkce profilování pro měření a analýzu výkonu úloh sběru a zpracování dat. Výsledky profilování se zaznamenávají do samostatného souboru, což vývojářům umožňuje identifikovat potenciální úzká místa a optimalizovat kód pro zvýšení efektivity.
+
+Celkově projekt nabízí komplexní řešení pro automatizovaný sběr dat, efektivní porovnávání a aktualizaci záznamů v databázi `PostgreSQL`, bezproblémové vyhledávání dat, zaznamenávání událostí a chyb a profilování výkonu pro průběžnou optimalizaci.
 
 ## Závěr
 Z důvodů, kdy mi bylo na pohovoru řečeno, že při zhotovení tohoto testu bych se měl doučit databáze,
