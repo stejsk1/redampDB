@@ -6,7 +6,15 @@
 ### Database data:
 - user: postgres
 - pw: redamp  
-    - The `connect_to_database()` function holds the database connection information, if needed the database connection variables can be changed.
+    - In the `main.py` file, within the `DataCollector` class, there are the database connection details.  
+    If needed, the connection variables can be modified to connect to a different database.  
+    `self.data_handler = DatabaseHandler(
+            dbname="postgres",
+            user="postgres",
+            password="redamp",
+            host="localhost",
+            port="5432",
+        )`
 
 ## Changelogs
 - A new file `changelog.md` has been added that explains the changes to the program.

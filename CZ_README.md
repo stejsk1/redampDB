@@ -6,7 +6,14 @@
 ### Údaje k databázi:
 - user: postgres
 - pw: redamp  
-Ve funkci `connect_to_database()` se nachází údaje o připojení k databázi, v případě potřeby lze změnit proměnné k připojení do databáze.
+    - V souboru `main.py` ve třídě DataCollector se nachází údaje o připojení k databázi, v případě potřeby lze změnit proměnné k připojení do databáze.  
+`self.data_handler = DatabaseHandler(
+            dbname="postgres",
+            user="postgres",
+            password="redamp",
+            host="localhost",
+            port="5432",
+        )`
 
 ## Teoretický test
 Cesta k testu teorie se nachází v složce `doc`, která zároveň i obsahuje úvodní brainstorming projektu.
