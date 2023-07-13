@@ -5,28 +5,24 @@ import datetime
 from urllib.parse import urlparse
 
 
-def get_ipv4_address(url):
+def get_ipv4_address(url, error_log):
     try:
         ip_address = socket.gethostbyname(urlparse(url).hostname)
         return ip_address
 
     except socket.gaierror:
-        with open("log.txt", "a", encoding="cp1250") as f:
-            f.write(f"Error getting an IPv4 address for a URL {url}\n")
+        error_log.append(f"Error getting an IPv4 address for a URL {url}\n")
         return np.nan
 
 
 def convert_datetimetostrf(date):
     if isinstance(date, (float, int)):
         if not np.isnan(date):
-            date = pd.to_datetime(date, unit="s").strftime("%Y-%m-%d %H:%M:%S")
-
+            return pd.to_datetime(date, unit="s").strftime("%Y-%m-%d %H:%M:%S")
         else:
-            date = ""
-
+            return ""
     elif isinstance(date, str):
-        date = pd.to_datetime(date).strftime("%Y-%m-%d %H:%M:%S")
-
+        return pd.to_datetime(date).strftime("%Y-%m-%d %H:%M:%S")
     return date
 
 

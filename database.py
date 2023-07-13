@@ -1,9 +1,10 @@
 import psycopg2
 import pandas as pd
 import numpy as np
-import multiprocessing
+import itertools
 from utilities import convert_datetimetostrf, get_ipv4_address
 from file_operations import compare_dataframes
+import concurrent.futures
 
 
 def connect_to_database():
@@ -114,11 +115,29 @@ def update_table(conn, cur, table_name, col_names, csv_status=None, url_csv_df=N
                 engine="python",
             )
 
-            url_csv_df["last_online"] = pd.to_datetime(
+            """ url_csv_df["last_online"] = pd.to_datetime(
                 url_csv_df["last_online"].apply(convert_datetimetostrf), errors="coerce"
             )
             url_csv_df["dateadded"] = pd.to_datetime(
                 url_csv_df["dateadded"].apply(convert_datetimetostrf), errors="coerce"
+            ) """
+
+            url_csv_df["last_online"] = pd.to_datetime(
+                url_csv_df["last_online"], errors="coerce"
+            )
+            url_csv_df["last_online"] = np.where(
+                ~url_csv_df["last_online"].isnull(),
+                url_csv_df["last_online"].dt.strftime("%Y-%m-%d %H:%M:%S"),
+                np.datetime64("NaT"),
+            )
+
+            url_csv_df["dateadded"] = pd.to_datetime(
+                url_csv_df["dateadded"], errors="coerce"
+            )
+            url_csv_df["dateadded"] = np.where(
+                ~url_csv_df["dateadded"].isnull(),
+                url_csv_df["dateadded"].dt.strftime("%Y-%m-%d %H:%M:%S"),
+                np.datetime64("NaT"),
             )
 
             main_column = "url"
@@ -131,26 +150,28 @@ def update_table(conn, cur, table_name, col_names, csv_status=None, url_csv_df=N
                 engine="python",
             )
 
-            url_csv_df["risk"] = url_csv_df["risk"].apply(
-                lambda x: int(x) if not np.isnan(x) else None
+            url_csv_df["risk"] = np.where(
+                np.isnan(url_csv_df["risk"]), None, url_csv_df["risk"].astype(int)
             )
-            url_csv_df["reliability"] = url_csv_df["reliability"].apply(
-                lambda x: int(x) if not np.isnan(x) else None
+            url_csv_df["reliability"] = np.where(
+                np.isnan(url_csv_df["reliability"]),
+                None,
+                url_csv_df["reliability"].astype(int),
             )
-            url_csv_df["occurrences"] = url_csv_df["occurrences"].apply(
-                lambda x: int(x) if not np.isnan(x) else None
+            url_csv_df["occurrences"] = np.where(
+                np.isnan(url_csv_df["occurrences"]),
+                None,
+                url_csv_df["occurrences"].astype(int),
             )
 
             main_column = "ip"
 
         elif table_name + ".csv" == "openphish.csv":
-            url_csv_df = pd.read_csv(
-                table_name + ".csv",
-                names=col_names[table_name],
-                sep="\n",
-                header=None,
-                engine="python",
-            )
+            with open(table_name + ".csv", "r") as file:
+                lines = file.readlines()
+
+            data = [line.strip() for line in lines]
+            url_csv_df = pd.DataFrame(data, columns=col_names[table_name])
 
             main_column = "url"
 
@@ -158,19 +179,27 @@ def update_table(conn, cur, table_name, col_names, csv_status=None, url_csv_df=N
         url_csv_df = compare_dataframes(main_column, table_data, url_csv_df)
 
         if table_name != "alienvault":
-            with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-                url_csv_df["ip"] = pool.map(
-                    get_ipv4_address, url_csv_df["url"].tolist()
+            error_log = []
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                results = executor.map(
+                    get_ipv4_address,
+                    url_csv_df["url"].tolist(),
+                    itertools.repeat(error_log),
                 )
+            url_csv_df["ip"] = list(results)
+            with open("log.txt", "a", encoding="cp1250") as f:
+                f.writelines(error_log)
 
         else:
             url_csv_df["url"] = None
-        url_csv_df["ip"] = url_csv_df["ip"].apply(
-            lambda x: None if not isinstance(x, str) else x
+
+        url_csv_df["ip"] = np.where(
+            url_csv_df["ip"].apply(isinstance, args=(str,)), url_csv_df["ip"], None
         )
-        url_csv_df["url"] = url_csv_df["url"].apply(
-            lambda x: None if not isinstance(x, str) else x
+        url_csv_df["url"] = np.where(
+            url_csv_df["url"].apply(isinstance, args=(str,)), url_csv_df["url"], None
         )
+
         url_csv_df["source"] = table_name
         update_table(conn, cur, base, col_names, url_csv_df=url_csv_df)
 

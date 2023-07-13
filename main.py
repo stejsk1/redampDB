@@ -64,7 +64,7 @@ def main():
                         url = urls[list(col_names.keys()).index(key)]
                         csv_status = pool.starmap(download_file, [url])[0]
 
-                        if csv_status == "updated" or "downloaded":
+                        if csv_status == "updated" or csv_status == "downloaded":
                             update_table(conn, cur, table_name, col_names, csv_status)
 
                         log_message(table_name, csv_status)
