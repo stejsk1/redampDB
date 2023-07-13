@@ -3,8 +3,9 @@
 ### Optimization, migration, customization
 - Optimization:  
     - Upgrading the code to make more use of the numpy library and pandas to increase code efficiency.
-        - Initial tests record total time: 2 minutes 37 seconds.
-        - Final tests record total time: 41.8579 s
+        - The very first launch of the program:
+            - Test before optimization record total time: 2 minutes 37 seconds.
+            - Test after optimization record total time: 41.8579 s
             - Depending on HW.
     - Correction of errors in code.
 - Migration:
