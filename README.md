@@ -11,9 +11,6 @@
 ## Changelogs
 - A new file `changelog.md` has been added that explains the changes to the program.
 
-## Theoretical test
-The path to the czech theory test is located in the `doc` folder, which also contains the initial brainstorming of the project.
-
 ## About the project
 The `urlhaus`, `alienvault` and `openphish` tables are linked to the `base` table using foreign keys.  
 The `base` table is the control (parent) table,
@@ -28,6 +25,9 @@ For the `alientvault` column names, the names used are those contained in the of
 `Latitude` - geolocated latitude of the IPv4  
 `Longitude` - geolocated longitude of the IPv4  
 `Occurrences` - these refer to the amount of occurrences reported to OTX.3  
+
+## Theoretical test
+The path to the czech theory test is located in the `doc` folder, which also contains the initial brainstorming of the project.
 
 ## Conclusion
 For reasons I was told at the interview that I should learn the database when taking this test,

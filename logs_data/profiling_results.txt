@@ -1,0 +1,34 @@
+Timer unit: 1e-07 s
+
+Total time: 25.8225 s
+File: c:\X\X\X\X\redampDB\main.py
+Function: run at line 58
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    58                                               def run(self):
+    59         1   15965853.0 15965853.0      6.2          if not self.authenticator.authenticate():
+    60                                                       return
+    61                                           
+    62         1     320895.0 320895.0      0.1          DatabaseHandler.create_table_if_not_exists(self.data_handler)
+    63         1    1547804.0 1547804.0      0.6          with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
+    64         4         35.0      8.8      0.0              for table_name in self.table_names:
+    65         3         13.0      4.3      0.0                  if table_name == "base":
+    66         1          3.0      3.0      0.0                      continue
+    67                                           
+    68        12        144.0     12.0      0.0                  for key, value in self.col_names.items():
+    69         9         50.0      5.6      0.0                      if table_name == key:
+    70         3        146.0     48.7      0.0                          url = self.urls[list(self.col_names.keys()).index(key)]
+    71         3        175.0     58.3      0.0                          file_handler = FileHandler(url[0], url[1])
+    72         3   30340627.0 10113542.3     11.7                          csv_status = pool.starmap(file_handler.download_file, [()])[0]
+    73                                           
+    74         3         27.0      9.0      0.0                          if csv_status == "updated" or csv_status == "downloaded":
+    75         3  209864757.0 69954919.0     81.3                              self.data_handler.update_table(
+    76         3         11.0      3.7      0.0                                  table_name,
+    77         3         15.0      5.0      0.0                                  self.col_names,
+    78         3          6.0      2.0      0.0                                  csv_status=csv_status,
+    79                                                                       )
+    80                                           
+    81         3         87.0     29.0      0.0                          network_handler = NetworkHandler()
+    82         3     184456.0  61485.3      0.1                          network_handler.log_message(table_name, csv_status)
+

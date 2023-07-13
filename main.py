@@ -1,33 +1,26 @@
-import pandas as pd
 import multiprocessing
-from database import create_table_if_not_exists, connect_to_database, update_table
-from file_operations import download_file
-from authentication import authenticate_user
-from utilities import log_message
+import os
+from utilities import NetworkHandler
+from file_operations import FileHandler
+from database import DatabaseHandler
+from authentication import Authenticator
+
+from line_profiler import LineProfiler
 
 
-def main():
-    authenticated = authenticate_user()
-
-    if authenticated:
-        conn = connect_to_database()
-        cur = conn.cursor()
-        create_table_if_not_exists(conn, cur)
-
-        urlhaus_url = "https://urlhaus.abuse.ch/downloads/csv_recent/"
-        alienvault_url = "http://reputation.alienvault.com/reputation.data"
-        openphish_url = "https://openphish.com/feed.txt"
-
-        urls = [
+class DataCollector:
+    def __init__(self):
+        self.authenticator = Authenticator()
+        self.urls = [
             (),
-            (urlhaus_url, "urlhaus.csv"),
-            (alienvault_url, "alienvault.csv"),
-            (openphish_url, "openphish.csv"),
+            ("https://urlhaus.abuse.ch/downloads/csv_recent/", "urlhaus.csv"),
+            ("http://reputation.alienvault.com/reputation.data", "alienvault.csv"),
+            ("https://openphish.com/feed.txt", "openphish.csv"),
         ]
 
-        table_names = ["base", "urlhaus", "alienvault", "openphish"]
+        self.table_names = ["base", "urlhaus", "alienvault", "openphish"]
 
-        col_names = {
+        self.col_names = {
             "base": ["source", "ip", "url"],
             "urlhaus": [
                 "id_incident",
@@ -54,24 +47,52 @@ def main():
             "openphish": ["url"],
         }
 
+        self.data_handler = DatabaseHandler(
+            dbname="postgres",
+            user="postgres",
+            password="redamp",
+            host="localhost",
+            port="5432",
+        )
+
+    def run(self):
+        if not self.authenticator.authenticate():
+            return
+
+        DatabaseHandler.create_table_if_not_exists(self.data_handler)
         with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-            for table_name in table_names:
+            for table_name in self.table_names:
                 if table_name == "base":
                     continue
 
-                for key, value in col_names.items():
+                for key, value in self.col_names.items():
                     if table_name == key:
-                        url = urls[list(col_names.keys()).index(key)]
-                        csv_status = pool.starmap(download_file, [url])[0]
+                        url = self.urls[list(self.col_names.keys()).index(key)]
+                        file_handler = FileHandler(url[0], url[1])
+                        csv_status = pool.starmap(file_handler.download_file, [()])[0]
 
                         if csv_status == "updated" or csv_status == "downloaded":
-                            update_table(conn, cur, table_name, col_names, csv_status)
+                            self.data_handler.update_table(
+                                table_name,
+                                self.col_names,
+                                csv_status=csv_status,
+                            )
 
-                        log_message(table_name, csv_status)
-    else:
-        print("Authentication failed. Terminating program.")
-        return
+                        network_handler = NetworkHandler()
+                        network_handler.log_message(table_name, csv_status)
 
 
 if __name__ == "__main__":
-    main()
+    collector = DataCollector()
+
+    profiler = LineProfiler()
+    profiler.add_function(DataCollector.run)
+    profiler.enable_by_count()
+    run_data_collector_wrapper = profiler(collector.run)
+
+    run_data_collector_wrapper()
+
+    log_dir = "logs_data"
+    logs_path = os.path.join(log_dir, "profiling_results.txt")
+    with open(logs_path, "w") as f:
+        profiler.print_stats(stream=f)
