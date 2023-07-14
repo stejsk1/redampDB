@@ -85,7 +85,7 @@ class DataCollector:
 
 def exception_hook(exctype, value, tb):
     log_dir = "logs_data"
-    logs_path = os.path.join(log_dir, "log.txt")
+    logs_path = os.path.join(log_dir, "error_log.txt")
     with open(logs_path, "a") as f:
         f.write(f"Type of exception: {exctype}\n")
         f.write(f"Value: {value}\n")
