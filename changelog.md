@@ -1,4 +1,15 @@
 # REDAMP
+## Minor changes
+After the last major update of `Changelog 07/13/2023` and `Changelog 07/13/2023-2`, there were some minor bugs in the code.
+This included incorrectly inserting base_id into tables if the IP address was the same for multiple `Base.source` tables.  
+Consequently, the `changelog` and `README` files had to be modified.
+- These adjustments include commit names: 
+    - `Changelog modified` (This commit)
+    - `incorrect line of code modified`
+    - `Minor bugs fixes`
+    - `Minor changes in README files`
+    - `Small README file changes`
+
 ## 07/13/2023 (2)
 ### Refactoring, customization, reorganization
 - **Refactoring:**
