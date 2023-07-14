@@ -1,4 +1,6 @@
 import time
+import getpass
+import hashlib
 
 
 class Authenticator:
@@ -6,18 +8,24 @@ class Authenticator:
         self, username="postgres", password="redamp", max_attempts=5, cooldown_time=60
     ):
         self.username = username
-        self.password = password
+        self.password = self.hash_password(password)
         self.max_attempts = max_attempts
         self.cooldown_time = cooldown_time
+
+    def hash_password(self, password):
+        return hashlib.sha256(password.encode()).hexdigest()
 
     def authenticate(self):
         attempts = 0
 
         while True:
             input_username = input("Enter your username: ")
-            input_password = input("Enter your password: ")
+            input_password = getpass.getpass("Enter your password: ")
 
-            if input_username == self.username and input_password == self.password:
+            if (
+                input_username == self.username
+                and self.hash_password(input_password) == self.password
+            ):
                 print("Authentication successful!")
                 return True
 

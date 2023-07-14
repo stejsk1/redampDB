@@ -219,7 +219,7 @@ class DatabaseHandler:
             UPDATE {table_name}
             SET base_id = BASE.base_id
             FROM BASE
-            WHERE {table_name}.base_id IS NULL AND {table_name}.{main_column} = BASE.{main_column};
+            WHERE {table_name}.base_id IS NULL AND {table_name}.{main_column} = BASE.{main_column} AND BASE.source = '{table_name}';
             """
 
             self.cur.execute(update_query)

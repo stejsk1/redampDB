@@ -1,10 +1,11 @@
 import multiprocessing
 import os
+import traceback
+import sys
 from utilities import NetworkHandler
 from file_operations import FileHandler
 from database import DatabaseHandler
 from authentication import Authenticator
-
 from line_profiler import LineProfiler
 
 
@@ -81,6 +82,22 @@ class DataCollector:
                         network_handler = NetworkHandler()
                         network_handler.log_message(table_name, csv_status)
 
+
+def exception_hook(exctype, value, tb):
+    log_dir = "logs_data"
+    logs_path = os.path.join(log_dir, "log.txt")
+    with open(logs_path, "a") as f:
+        f.write(f"Type of exception: {exctype}\n")
+        f.write(f"Value: {value}\n")
+        traceback.print_tb(tb, file=f)
+        f.write("\n")
+    print("Type of exception: ", exctype)
+    print("Value: ", value)
+    print("Traceback: ", "".join(traceback.format_tb(tb)))
+    sys.exit()
+
+
+sys.excepthook = exception_hook
 
 if __name__ == "__main__":
     collector = DataCollector()

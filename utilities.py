@@ -1,6 +1,5 @@
 import socket
 import numpy as np
-import pandas as pd
 import datetime
 import os
 from urllib.parse import urlparse

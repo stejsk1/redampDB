@@ -10,9 +10,9 @@
     The first one is `csv_data`, and the second one is `logs_data`.
         - The `csv_data` directory now contains or will contain newly downloaded CSV files upon the first execution of the program.
 
-        - The "logs_data" directory will contain "logs.txt" and a new file called "profiling_results.txt," which includes the benchmark of the main code. 
-            - You can find an example of the "profiling_results" file in the folder.  
-            ***Please note that running the program will overwrite it with your values.***
+        - The `logs_data` directory will contain `logs.txt` and a new file called `profiling_results.txt`, which includes the benchmark of the main code. 
+            - You can find an example of the "profiling_results_example" file in the folder.  
+            ***Please note that running the program will always overwrite `profiling_results.txt` with new values.***
 
 - **Reorganization:**
     - The following file schema falls under code reorganization.
@@ -62,6 +62,7 @@
             - `authentication.py`
                 - **class Authenticator:**
                     - *def \_\_init__(self, username="postgres", password="redamp", max_attempts=5, cooldown_time=60):*
+                    - *def hash_password(password):*
                     - *def authenticate(self):*
 
 ## 07/13/2023 (1)
